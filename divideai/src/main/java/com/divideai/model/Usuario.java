@@ -5,6 +5,8 @@ public class Usuario {
     private String senhaHash;
     //constutores:
 
+    public Usuario(){};
+
     //construtor de criacao, ele ainda não possui id pois quem gera é o banco.
     public Usuario(String nome, String email, String senhaHash){
         this.nome = nome;
