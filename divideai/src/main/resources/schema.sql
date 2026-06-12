@@ -1,25 +1,25 @@
-CREATE TABLE usuario (
+CREATE TABLE IF NOT EXISTS usuario (
     id          BIGSERIAL PRIMARY KEY,
     nome        VARCHAR(100) NOT NULL,
     email       VARCHAR(150) NOT NULL UNIQUE,
     senha_hash  VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE grupo (
+CREATE TABLE IF NOT EXISTS grupo (
     id           BIGSERIAL PRIMARY KEY,
     nome         VARCHAR(100) NOT NULL,
     descricao    TEXT,
     data_criacao DATE NOT NULL DEFAULT CURRENT_DATE
 );
 
-CREATE TABLE grupo_usuario (
+CREATE TABLE IF NOT EXISTS grupo_usuario (
     grupo_id     BIGINT NOT NULL REFERENCES grupo(id) ON DELETE CASCADE,
     usuario_id   BIGINT NOT NULL REFERENCES usuario(id),
     data_entrada DATE NOT NULL DEFAULT CURRENT_DATE,
     PRIMARY KEY (grupo_id, usuario_id)
 );
 
-CREATE TABLE despesa (
+CREATE TABLE IF NOT EXISTS despesa (
     id           BIGSERIAL PRIMARY KEY,
     grupo_id     BIGINT NOT NULL REFERENCES grupo(id) ON DELETE CASCADE,
     pagador_id   BIGINT NOT NULL REFERENCES usuario(id),
@@ -30,7 +30,7 @@ CREATE TABLE despesa (
     tipo_divisao VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE divisao_despesa (
+CREATE TABLE IF NOT EXISTS divisao_despesa (
     id            BIGSERIAL PRIMARY KEY,
     despesa_id    BIGINT NOT NULL REFERENCES despesa(id) ON DELETE CASCADE,
     usuario_id    BIGINT NOT NULL REFERENCES usuario(id),
