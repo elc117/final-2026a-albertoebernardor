@@ -1,9 +1,7 @@
 services:
   - type: web
     name: divideai
-    runtime: java
-    buildCommand: cd divideai && mvn clean package -DskipTests
-    startCommand: java -jar divideai/target/divideai-1.0-SNAPSHOT.jar
+    runtime: docker
     envVars:
       - key: DB_URL
         sync: false
