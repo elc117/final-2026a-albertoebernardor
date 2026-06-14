@@ -1,3 +1,5 @@
+package com.divideai.model;
+
 import java.time.LocalDate;
 
 public class Grupo {
