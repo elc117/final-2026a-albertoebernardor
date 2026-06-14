@@ -1,17 +1,22 @@
 package com.divideai.repository;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
 import com.divideai.database.DatabaseConnection;
 import com.divideai.model.Grupo;
 import com.divideai.model.Usuario;
 
 public class GrupoRepository {
 
-    public Long criar(Grupo grupo) {
+    public Long criar(Grupo grupo){
         String sql = "INSERT INTO grupo (nome, descricao, data_criacao) VALUES (?, ?, ?)";
 
         try (
@@ -38,7 +43,8 @@ public class GrupoRepository {
         return null;
     }
 
-    public Optional<Grupo> buscarPorId(Long id) {
+
+    public Optional<Grupo> buscarPorId(Long id){
         String sql = "SELECT id, nome, descricao, data_criacao FROM grupo WHERE id = ?";
 
         try (
@@ -66,7 +72,7 @@ public class GrupoRepository {
         return Optional.empty();
     }
 
-    public List<Grupo> listar() {
+    public List<Grupo> listar(){
         String sql = "SELECT id, nome, descricao, data_criacao FROM grupo";
         List<Grupo> grupos = new ArrayList<>();
 
