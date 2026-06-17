@@ -116,4 +116,60 @@ public class DespesaRepository {
 
         return lista;
     }
+
+    private void set_Despesa(PreparedStatement ps, Despesa despesa) throws SQLException{
+        ps.setLong(1, despesa.getGrupoId());
+        ps.setLong(2, despesa.getPagadorId());
+        ps.setString(3, despesa.getDescricao());
+        ps.setBigDecimal(4, despesa.getValor());
+        ps.setDate(5, Date.valueOf(despesa.getData()));
+        ps.setString(6, despesa.getCategoria().name());
+        ps.setString(7, despesa.getTipoDivisao().name());
+    }
+
+    private void set_DivisaoDespesa(PreparedStatement ps, DivisaoDespesa divisao, Long idGerado) throws SQLException{
+        ps.setLong(1, idGerado);
+        ps.setLong(2, divisao.getUsuarioId());
+        ps.setBigDecimal(3, divisao.getValorDevido());
+        ps.setBoolean(4, divisao.isQuitada());
+        ps.executeUpdate();
+    }
+
+    public void salvar(Despesa despesa, List<DivisaoDespesa> divdespesa) {
+        String sqlDespesa = """
+                INSERT INTO despesa (grupo_id, pagador_id, descricao, valor, data, categoria, tipo_divisao)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                RETURNING id
+                """;
+        String sqlDivisao = """
+                INSERT INTO divisao_despesa (despesa_id, usuario_id, valor_devido, quitada)
+                VALUES (?, ?, ?, ?)
+                """;
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                try (PreparedStatement ps = conn.prepareStatement(sqlDespesa)) {
+                    set_Despesa(ps, despesa);
+
+                    try (ResultSet rs = ps.executeQuery()) {
+                        rs.next();
+                        Long idGerado = rs.getLong("id");
+
+                        for (DivisaoDespesa divisao : divdespesa) {
+                            try (PreparedStatement ps2 = conn.prepareStatement(sqlDivisao)) {
+                                set_DivisaoDespesa(ps2, divisao, idGerado);  
+                            }
+                        }
+                    }
+                }
+                conn.commit();
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
