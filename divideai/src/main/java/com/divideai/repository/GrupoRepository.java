@@ -17,7 +17,7 @@ import com.divideai.model.Usuario;
 public class GrupoRepository {
 
     public Long criar(Grupo grupo){
-        String sql = "INSERT INTO grupo (nome, descricao, data_criacao) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO grupo (nome, descricao, data_criacao, codigo_publico) VALUES (?, ?, ?, ?)";
 
         try (
             Connection conn = DatabaseConnection.getConnection();
@@ -26,6 +26,7 @@ public class GrupoRepository {
             ps.setString(1, grupo.getNome());
             ps.setString(2, grupo.getDescricao());
             ps.setDate(3, java.sql.Date.valueOf(grupo.getDataCriacao()));
+            ps.setString(4, grupo.getCodigoPublico());
             ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -43,9 +44,37 @@ public class GrupoRepository {
         return null;
     }
 
+    public Optional<Grupo> buscarPorCodigo(String codigo){
+        String sql = "SELECT id, nome, descricao, data_criacao, codigo_publico FROM grupo WHERE codigo_publico = ?";
+
+        try (
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, codigo);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new Grupo(
+                        rs.getLong("id"),
+                        rs.getString("nome"),
+                        rs.getString("descricao"),
+                        rs.getDate("data_criacao").toLocalDate(),
+                        rs.getString("codigo_publico")
+                    ));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar grupo por código", e);
+        }
+
+        return Optional.empty();
+    }
+
 
     public Optional<Grupo> buscarPorId(Long id){
-        String sql = "SELECT id, nome, descricao, data_criacao FROM grupo WHERE id = ?";
+        String sql = "SELECT id, nome, descricao, data_criacao, codigo_publico FROM grupo WHERE id = ?";
 
         try (
             Connection conn = DatabaseConnection.getConnection();
@@ -59,7 +88,8 @@ public class GrupoRepository {
                         rs.getLong("id"),
                         rs.getString("nome"),
                         rs.getString("descricao"),
-                        rs.getDate("data_criacao").toLocalDate()
+                        rs.getDate("data_criacao").toLocalDate(),
+                        rs.getString("codigo_publico")
                     );
                     return Optional.of(grupo);
                 }
@@ -73,7 +103,7 @@ public class GrupoRepository {
     }
 
     public List<Grupo> listar(){
-        String sql = "SELECT id, nome, descricao, data_criacao FROM grupo";
+        String sql = "SELECT id, nome, descricao, data_criacao, codigo_publico FROM grupo";
         List<Grupo> grupos = new ArrayList<>();
 
         try (
@@ -86,7 +116,8 @@ public class GrupoRepository {
                     rs.getLong("id"),
                     rs.getString("nome"),
                     rs.getString("descricao"),
-                    rs.getDate("data_criacao").toLocalDate()
+                    rs.getDate("data_criacao").toLocalDate(),
+                    rs.getString("codigo_publico")
                 ));
             }
 
@@ -131,7 +162,7 @@ public class GrupoRepository {
     }
 
     public List<Grupo> listarPorUsuario(Long usuarioId) {
-        String sql = "SELECT g.id, g.nome, g.descricao, g.data_criacao"
+        String sql = "SELECT g.id, g.nome, g.descricao, g.data_criacao, g.codigo_publico"
                    + " FROM grupo g"
                    + " JOIN grupo_usuario gu ON gu.grupo_id = g.id"
                    + " WHERE gu.usuario_id = ?";
@@ -149,7 +180,8 @@ public class GrupoRepository {
                         rs.getLong("id"),
                         rs.getString("nome"),
                         rs.getString("descricao"),
-                        rs.getDate("data_criacao").toLocalDate()
+                        rs.getDate("data_criacao").toLocalDate(),
+                        rs.getString("codigo_publico")
                     ));
                 }
             }
@@ -195,7 +227,7 @@ public class GrupoRepository {
     }
 
     public List<Usuario> listarMembros(Long grupoId) {
-        String sql = "SELECT u.id, u.nome, u.email, u.senha_hash"
+        String sql = "SELECT u.id, u.nome, u.email, u.senha_hash, u.chave_pix"
                    + " FROM usuario u"
                    + " JOIN grupo_usuario gu ON gu.usuario_id = u.id"
                    + " WHERE gu.grupo_id = ?";
@@ -213,7 +245,8 @@ public class GrupoRepository {
                         rs.getLong("id"),
                         rs.getString("nome"),
                         rs.getString("email"),
-                        rs.getString("senha_hash")
+                        rs.getString("senha_hash"),
+                        rs.getString("chave_pix")
                     ));
                 }
             }

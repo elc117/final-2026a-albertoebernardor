@@ -5,6 +5,7 @@ public class Usuario {
     private String nome;
     private String email;
     private String senhaHash;
+    private String chavePix;
     //constutores:
 
     public Usuario(){};
@@ -16,11 +17,12 @@ public class Usuario {
         this.senhaHash = senhaHash;
     }
     //Usuario Existente
-    public Usuario(Long id, String nome, String email, String senhaHash){
+    public Usuario(Long id, String nome, String email, String senhaHash, String chavePix){
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.senhaHash = senhaHash;
+        this.chavePix = chavePix;
     }
 
     // setters & getters
@@ -56,6 +58,14 @@ public class Usuario {
 
     public String getSenhaHash(){
         return senhaHash;
+    }
+
+    public void setChavePix(String chavePix){
+        this.chavePix = chavePix;
+    }
+
+    public String getChavePix(){
+        return chavePix;
     }
 
 }

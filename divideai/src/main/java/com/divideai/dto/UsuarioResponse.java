@@ -1,3 +1,3 @@
 package com.divideai.dto;
 
-public record UsuarioResponse(Long id, String nome, String email){}
+public record UsuarioResponse(Long id, String nome, String email, String chavePix){}

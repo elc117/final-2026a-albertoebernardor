@@ -23,16 +23,30 @@ public class GrupoService {
         if (request.nome() == null || request.nome().isBlank())
             throw new IllegalArgumentException("Nome não pode ser vazio");
 
-        Grupo grupo = new Grupo(request.nome(), request.descricao(), LocalDate.now());
+        String codigoPublico = Integer.toHexString((request.nome() + LocalDate.now()).hashCode());
+        Grupo grupo = new Grupo(request.nome(), request.descricao(), LocalDate.now(), codigoPublico);
         Long id = grupoRepository.criar(grupo);
         grupoRepository.adicionarMembro(id, request.criadorId());
         List<Usuario> membros = grupoRepository.listarMembros(id);
         List<UsuarioResponse> participantes = new ArrayList<>();
-        
-        for (Usuario u : membros) 
-            participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail()));
-        
-        return new GrupoResponse(id, grupo.getNome(), grupo.getDescricao(), grupo.getDataCriacao(), participantes);
+
+        for (Usuario u : membros)
+            participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail(), u.getChavePix()));
+
+        return new GrupoResponse(id, grupo.getNome(), grupo.getDescricao(), grupo.getDataCriacao(), participantes, codigoPublico);
+    }
+
+    public GrupoResponse buscarPorCodigo(String codigo) {
+        Grupo grupo = grupoRepository.buscarPorCodigo(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Grupo não encontrado"));
+
+        List<Usuario> membros = grupoRepository.listarMembros(grupo.getId());
+        List<UsuarioResponse> participantes = new ArrayList<>();
+
+        for (Usuario u : membros)
+            participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail(), u.getChavePix()));
+
+        return new GrupoResponse(grupo.getId(), grupo.getNome(), grupo.getDescricao(), grupo.getDataCriacao(), participantes, grupo.getCodigoPublico());
     }
 
     public GrupoResponse buscarPorId(Long id) {
@@ -43,9 +57,9 @@ public class GrupoService {
         List<UsuarioResponse> participantes = new ArrayList<>();
 
         for (Usuario u : membros)
-            participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail()));
+            participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail(), u.getChavePix()));
 
-        return new GrupoResponse(grupo.getId(), grupo.getNome(), grupo.getDescricao(), grupo.getDataCriacao(), participantes);
+        return new GrupoResponse(grupo.getId(), grupo.getNome(), grupo.getDescricao(), grupo.getDataCriacao(), participantes, grupo.getCodigoPublico());
     }
 
     public List<GrupoResponse> listar(){
@@ -57,9 +71,9 @@ public class GrupoService {
             List<UsuarioResponse> participantes = new ArrayList<>();
 
             for (Usuario u : membros)
-                participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail()));
+                participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail(), u.getChavePix()));
 
-            resposta.add(new GrupoResponse(g.getId(), g.getNome(), g.getDescricao(), g.getDataCriacao(), participantes));
+            resposta.add(new GrupoResponse(g.getId(), g.getNome(), g.getDescricao(), g.getDataCriacao(), participantes, g.getCodigoPublico()));
         }
 
         return resposta;
@@ -74,9 +88,9 @@ public class GrupoService {
             List<UsuarioResponse> participantes = new ArrayList<>();
 
             for (Usuario u : membros)
-                participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail()));
+                participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail(), u.getChavePix()));
 
-            resposta.add(new GrupoResponse(g.getId(), g.getNome(), g.getDescricao(), g.getDataCriacao(), participantes));
+            resposta.add(new GrupoResponse(g.getId(), g.getNome(), g.getDescricao(), g.getDataCriacao(), participantes, g.getCodigoPublico()));
         }
 
         return resposta;
@@ -97,9 +111,9 @@ public class GrupoService {
         List<UsuarioResponse> participantes = new ArrayList<>();
 
         for (Usuario u : membros)
-            participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail()));
+            participantes.add(new UsuarioResponse(u.getId(), u.getNome(), u.getEmail(), u.getChavePix()));
 
-        return new GrupoResponse(grupo.getId(), grupo.getNome(), grupo.getDescricao(), grupo.getDataCriacao(), participantes);
+        return new GrupoResponse(grupo.getId(), grupo.getNome(), grupo.getDescricao(), grupo.getDataCriacao(), participantes, grupo.getCodigoPublico());
     }
 
     public void deletar(Long id) {

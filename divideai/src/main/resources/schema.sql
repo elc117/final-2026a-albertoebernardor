@@ -2,14 +2,16 @@ CREATE TABLE IF NOT EXISTS usuario (
     id          BIGSERIAL PRIMARY KEY,
     nome        VARCHAR(100) NOT NULL,
     email       VARCHAR(150) NOT NULL UNIQUE,
-    senha_hash  VARCHAR(255) NOT NULL
+    senha_hash  VARCHAR(255) NOT NULL,
+    chave_pix   VARCHAR(150)
 );
 
 CREATE TABLE IF NOT EXISTS grupo (
-    id           BIGSERIAL PRIMARY KEY,
-    nome         VARCHAR(100) NOT NULL,
-    descricao    TEXT,
-    data_criacao DATE NOT NULL DEFAULT CURRENT_DATE
+    id              BIGSERIAL PRIMARY KEY,
+    nome            VARCHAR(100) NOT NULL,
+    descricao       TEXT,
+    data_criacao    DATE NOT NULL DEFAULT CURRENT_DATE,
+    codigo_publico  VARCHAR(20) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS grupo_usuario (

@@ -36,7 +36,7 @@ public class UsuarioService {
         String senhaHash = hash(request.senha());
         Usuario usuario = new Usuario(request.nome(), request.email(), senhaHash);
         Long id = repository.criar(usuario);
-        return new UsuarioResponse(id, usuario.getNome(), usuario.getEmail());
+        return new UsuarioResponse(id, usuario.getNome(), usuario.getEmail(), usuario.getChavePix());
     }
 
     public UsuarioResponse login(LoginRequest request){
@@ -52,13 +52,22 @@ public class UsuarioService {
         if(!BCrypt.checkpw(request.senha(), usuario.getSenhaHash()))
             throw new IllegalArgumentException("Email ou senha inválidos");
 
-        return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getEmail());
+        return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getChavePix());
     }
 
     public UsuarioResponse buscarPorId(Long id){
         Usuario usuario = repository.buscarPorId(id)
             .orElseThrow(() -> new IllegalArgumentException("Id Inválido"));
 
-        return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getEmail());
+        return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getChavePix());
+    }
+
+    public UsuarioResponse atualizarChavePix(Long id, String chavePix){
+        repository.buscarPorId(id)
+            .orElseThrow(() -> new IllegalArgumentException("Id Inválido"));
+
+        repository.atualizarChavePix(id, chavePix);
+        Usuario usuario = repository.buscarPorId(id).get();
+        return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getChavePix());
     }
 }

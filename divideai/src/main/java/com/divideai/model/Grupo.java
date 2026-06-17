@@ -7,22 +7,25 @@ public class Grupo {
     private String nome;
     private String descricao;
     private LocalDate dataCriacao;
+    private String codigoPublico;
 
     public Grupo(){}
 
-    //construtor de criacao, ele ainda não possui id pois quem gera é o banco.      
-    public Grupo(String nome, String descricao, LocalDate dataCriacao){
+    //construtor de criacao, ele ainda não possui id pois quem gera é o banco.
+    public Grupo(String nome, String descricao, LocalDate dataCriacao, String codigoPublico){
         this.nome = nome;
         this.descricao = descricao;
         this.dataCriacao = dataCriacao;
+        this.codigoPublico = codigoPublico;
     }
 
     //Grupo Existente
-    public Grupo(Long id, String nome, String descricao, LocalDate dataCriacao){
+    public Grupo(Long id, String nome, String descricao, LocalDate dataCriacao, String codigoPublico){
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
-        this.dataCriacao = dataCriacao; 
+        this.dataCriacao = dataCriacao;
+        this.codigoPublico = codigoPublico;
     }
     
     //setters & getters
@@ -57,6 +60,13 @@ public class Grupo {
         return dataCriacao;
     }
 
+    public void setCodigoPublico(String codigoPublico){
+        this.codigoPublico = codigoPublico;
+    }
+
+    public String getCodigoPublico(){
+        return codigoPublico;
+    }
 
 }
 

@@ -39,7 +39,7 @@ public class UsuarioRepository {
 
    
     public Optional<Usuario> buscarPorId(Long id) {
-        String sql = "SELECT id, nome, email, senha_hash FROM usuario WHERE id = ?";
+        String sql = "SELECT id, nome, email, senha_hash, chave_pix FROM usuario WHERE id = ?";
         
         try (
             Connection conn = DatabaseConnection.getConnection();
@@ -53,8 +53,9 @@ public class UsuarioRepository {
                     String nome = rs.getString("nome");
                     String email = rs.getString("email");
                     String senhaHash = rs.getString("senha_hash");
+                    String chavePix = rs.getString("chave_pix");
 
-                    Usuario usuario = new Usuario(usuarioId, nome, email, senhaHash);
+                    Usuario usuario = new Usuario(usuarioId, nome, email, senhaHash, chavePix);
                     return Optional.of(usuario);
                 }
             }
@@ -68,7 +69,7 @@ public class UsuarioRepository {
 
   
     public Optional<Usuario> buscarPorEmail(String email) {
-        String sql = "SELECT id, nome, email, senha_hash FROM usuario WHERE email = ?";
+        String sql = "SELECT id, nome, email, senha_hash, chave_pix FROM usuario WHERE email = ?";
         
         try (
             Connection conn = DatabaseConnection.getConnection();
@@ -81,8 +82,9 @@ public class UsuarioRepository {
                     Long usuarioId = rs.getLong("id");
                     String nome = rs.getString("nome");
                     String senhaHash = rs.getString("senha_hash");
+                    String chavePix = rs.getString("chave_pix");
 
-                    Usuario usuario = new Usuario(usuarioId, nome, email, senhaHash);
+                    Usuario usuario = new Usuario(usuarioId, nome, email, senhaHash, chavePix);
                     return Optional.of(usuario);
                 }
             }
@@ -96,7 +98,7 @@ public class UsuarioRepository {
 
   
     public List<Usuario> listar() {
-        String sql = "SELECT id, nome, email, senha_hash FROM usuario";
+        String sql = "SELECT id, nome, email, senha_hash, chave_pix FROM usuario";
         List<Usuario> usuarios = new ArrayList<>();
 
         try (
@@ -109,8 +111,9 @@ public class UsuarioRepository {
                 String nome = rs.getString("nome");
                 String email = rs.getString("email");
                 String senhaHash = rs.getString("senha_hash");
+                String chavePix = rs.getString("chave_pix");
 
-                Usuario usuario = new Usuario(usuarioId, nome, email, senhaHash);
+                Usuario usuario = new Usuario(usuarioId, nome, email, senhaHash, chavePix);
                 usuarios.add(usuario);
             }
 
@@ -143,6 +146,23 @@ public class UsuarioRepository {
     }
 
  
+    public boolean atualizarChavePix(Long id, String chavePix) {
+        String sql = "UPDATE usuario SET chave_pix = ? WHERE id = ?";
+
+        try (
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, chavePix);
+            ps.setLong(2, id);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao atualizar chave pix", e);
+        }
+    }
+
     public boolean deletar(Long id) {
         String sql = "DELETE FROM usuario WHERE id = ?";
 
