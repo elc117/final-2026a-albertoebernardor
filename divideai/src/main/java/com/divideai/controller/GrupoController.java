@@ -72,6 +72,12 @@ public class GrupoController{
             ctx.status(204);
         });
 
+        app.get("/public/{codigo}", ctx -> {      // rota publica do grupo
+            String codigo = ctx.pathParam("codigo");
+            GrupoResponse response = service.buscarPorCodigo(codigo);
+            ctx.json(response);
+        });
+
     }
 
 }

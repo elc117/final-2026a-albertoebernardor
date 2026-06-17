@@ -33,5 +33,12 @@ public class UsuarioController{
             UsuarioResponse response = service.buscarPorId(id);
             ctx.json(response);
         });
+
+        app.put("/usuarios/{id}/pix", ctx -> {
+            Long id = Long.parseLong(ctx.pathParam("id"));
+            String chavePix = ctx.body();
+            UsuarioResponse response = service.atualizarChavePix(id, chavePix);
+            ctx.json(response);
+        });
     }
 }
