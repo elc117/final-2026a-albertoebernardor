@@ -1,5 +1,10 @@
+package com.divideai.model;
+
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import com.divideai.model.Categoria;
+import com.divideai.model.TipoDivisao;
 
 
 //falta ver a questão dos tads

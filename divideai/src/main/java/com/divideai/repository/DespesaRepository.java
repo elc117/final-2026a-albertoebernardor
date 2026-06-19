@@ -131,7 +131,7 @@ public class DespesaRepository {
         ps.setLong(1, idGerado);
         ps.setLong(2, divisao.getUsuarioId());
         ps.setBigDecimal(3, divisao.getValorDevido());
-        ps.setBoolean(4, divisao.isQuitada());
+        ps.setBoolean(4, divisao.getQuitada());
         ps.executeUpdate();
     }
 
