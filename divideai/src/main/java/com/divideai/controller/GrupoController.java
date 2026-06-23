@@ -61,6 +61,14 @@ public class GrupoController{
             ctx.status(204);
         });
 
+        app.post("/grupos/{grupoId}/membros/email", ctx -> {   // adiciona membro por email
+            Long grupoId = Long.parseLong(ctx.pathParam("grupoId"));
+            String email = ctx.body();
+            Long usuarioId = usuarioService.buscarPorEmail(email).id();
+            service.adicionarMembro(grupoId, usuarioId);
+            ctx.status(201);
+        });
+
         app.post("/grupos/{grupoId}/membros/{usuarioId}", ctx -> {   //adiciona usuario em um grupo
             Long grupoId = Long.parseLong(ctx.pathParam("grupoId"));
             Long usuarioId = Long.parseLong(ctx.pathParam("usuarioId"));
@@ -73,14 +81,6 @@ public class GrupoController{
             Long usuarioId = Long.parseLong(ctx.pathParam("usuarioId"));
             service.removerMembro(grupoId, usuarioId);
             ctx.status(204);
-        });
-
-        app.post("/grupos/{grupoId}/membros/email", ctx -> {   // adiciona membro por email
-            Long grupoId = Long.parseLong(ctx.pathParam("grupoId"));
-            String email = ctx.body();
-            Long usuarioId = usuarioService.buscarPorEmail(email).id();
-            service.adicionarMembro(grupoId, usuarioId);
-            ctx.status(201);
         });
 
         app.get("/public/{codigo}", ctx -> {      // rota publica do grupo
