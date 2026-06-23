@@ -6,14 +6,17 @@ import com.divideai.dto.GrupoRequest;
 import com.divideai.dto.GrupoResponse;
 import com.divideai.dto.UsuarioResponse;
 import com.divideai.service.GrupoService;
+import com.divideai.service.UsuarioService;
 
 import io.javalin.Javalin;
 
 public class GrupoController{
     private final GrupoService service;
+    private final UsuarioService usuarioService;
 
-    public GrupoController(GrupoService service){
+    public GrupoController(GrupoService service, UsuarioService usuarioService){
         this.service = service;
+        this.usuarioService = usuarioService;
     }
 
     public void registarRotas(Javalin app) {        //cria grupo
@@ -70,6 +73,14 @@ public class GrupoController{
             Long usuarioId = Long.parseLong(ctx.pathParam("usuarioId"));
             service.removerMembro(grupoId, usuarioId);
             ctx.status(204);
+        });
+
+        app.post("/grupos/{grupoId}/membros/email", ctx -> {   // adiciona membro por email
+            Long grupoId = Long.parseLong(ctx.pathParam("grupoId"));
+            String email = ctx.body();
+            Long usuarioId = usuarioService.buscarPorEmail(email).id();
+            service.adicionarMembro(grupoId, usuarioId);
+            ctx.status(201);
         });
 
         app.get("/public/{codigo}", ctx -> {      // rota publica do grupo

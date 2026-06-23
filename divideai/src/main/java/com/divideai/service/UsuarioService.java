@@ -62,6 +62,13 @@ public class UsuarioService {
         return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getChavePix());
     }
 
+    public UsuarioResponse buscarPorEmail(String email){
+        Usuario usuario = repository.buscarPorEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getEmail(), usuario.getChavePix());
+    }
+
     public UsuarioResponse atualizarChavePix(Long id, String chavePix){
         repository.buscarPorId(id)
             .orElseThrow(() -> new IllegalArgumentException("Id Inválido"));

@@ -24,7 +24,7 @@ public class App {
         GrupoService grupoService = new GrupoService(grupoRepository);
 
         UsuarioController usuarioController = new UsuarioController(usuarioService);
-        GrupoController grupoController = new GrupoController(grupoService);
+        GrupoController grupoController = new GrupoController(grupoService, usuarioService);
 
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
