@@ -1,6 +1,7 @@
 package com.divideai.service;
 
 import java.time.LocalDate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class GrupoService {
         if (request.nome() == null || request.nome().isBlank())
             throw new IllegalArgumentException("Nome não pode ser vazio");
 
-        String codigoPublico = Integer.toHexString((request.nome() + LocalDate.now()).hashCode());
+        String codigoPublico = Integer.toHexString((request.nome() + request.criadorId() + Instant.now().toEpochMilli()).hashCode());
         Grupo grupo = new Grupo(request.nome(), request.descricao(), LocalDate.now(), codigoPublico);
         Long id = grupoRepository.criar(grupo);
         grupoRepository.adicionarMembro(id, request.criadorId());
