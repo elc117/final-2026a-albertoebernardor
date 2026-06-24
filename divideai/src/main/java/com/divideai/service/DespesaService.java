@@ -91,4 +91,13 @@ public class DespesaService {
     public List<Despesa> historico(Long grupoId) {
         return despesaRepository.listarPorGrupo(grupoId);
     }
+
+    public void deletar(Long grupoId, Long despesaId) {
+        Despesa despesa = despesaRepository.listarPorGrupo(grupoId)
+                .stream()
+                .filter(d -> d.getId().equals(despesaId))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("Despesa não encontrada no grupo"));
+        despesaRepository.deletar(despesa.getId());
+    }
 }

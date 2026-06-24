@@ -22,6 +22,7 @@ public class DespesaController {
     public void registrarRotas(Javalin app) {
         app.post("/grupos/{id}/despesas", this::registrar);
         app.get("/grupos/{id}/despesas", this::historico);
+        app.delete("/grupos/{id}/despesas/{despesaId}", this::deletar);
         app.get("/grupos/{id}/saldos", this::saldos);
         app.get("/grupos/{id}/resumo", this::resumo);
     }
@@ -36,6 +37,13 @@ public class DespesaController {
         Long grupoId = Long.parseLong(ctx.pathParam("id"));
         List<Despesa> despesas = despesaService.historico(grupoId);
         ctx.json(despesas);
+    }
+
+    private void deletar(Context ctx) {
+        Long grupoId = Long.parseLong(ctx.pathParam("id"));
+        Long despesaId = Long.parseLong(ctx.pathParam("despesaId"));
+        despesaService.deletar(grupoId, despesaId);
+        ctx.status(204);
     }
     private void saldos(Context ctx) {
         Long grupoId = Long.parseLong(ctx.pathParam("id"));

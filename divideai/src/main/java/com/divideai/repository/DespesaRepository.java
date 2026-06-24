@@ -135,6 +135,19 @@ public class DespesaRepository {
         ps.executeUpdate();
     }
 
+    public void deletar(Long id) {
+        String sql = "DELETE FROM despesa WHERE id = ?";
+        try (
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+        ) {
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void salvar(Despesa despesa, List<DivisaoDespesa> divdespesa) {
         String sqlDespesa = """
                 INSERT INTO despesa (grupo_id, pagador_id, descricao, valor, data, categoria, tipo_divisao)
