@@ -1,10 +1,14 @@
 package com.divideai;
 
+import com.divideai.controller.DespesaController;
 import com.divideai.controller.GrupoController;
 import com.divideai.controller.UsuarioController;
+import com.divideai.repository.DespesaRepository;
 import com.divideai.repository.GrupoRepository;
 import com.divideai.repository.UsuarioRepository;
+import com.divideai.service.DespesaService;
 import com.divideai.service.GrupoService;
+import com.divideai.service.SaldoService;
 import com.divideai.service.UsuarioService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -23,8 +27,14 @@ public class App {
         UsuarioService usuarioService = new UsuarioService(usuarioRepository);
         GrupoService grupoService = new GrupoService(grupoRepository);
 
+        DespesaRepository despesaRepository = new DespesaRepository();
+
+        DespesaService despesaService = new DespesaService(grupoRepository, despesaRepository, usuarioRepository);
+        SaldoService saldoService = new SaldoService(grupoRepository, despesaRepository);
+
         UsuarioController usuarioController = new UsuarioController(usuarioService);
         GrupoController grupoController = new GrupoController(grupoService, usuarioService);
+        DespesaController despesaController = new DespesaController(despesaService, saldoService);
 
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
@@ -39,6 +49,7 @@ public class App {
 
         usuarioController.registrarRotas(app);
         grupoController.registarRotas(app);
+        despesaController.registrarRotas(app);
 
         app.start(port);
     }
