@@ -125,8 +125,8 @@ public class SaldoService {
             if(valorMaiorDevedor.compareTo(BigDecimal.ZERO) == 0)
                 devedores.remove(maiorDevedor);
 
-            BigDecimal valorMenorDevedor = saldosCredores.get(maiorDevedor.getId());
-            if(valorMenorDevedor.compareTo(BigDecimal.ZERO) == 0)
+            BigDecimal valorRestanteCredor = saldosCredores.get(maiorCredor.getId());
+            if(valorRestanteCredor.compareTo(BigDecimal.ZERO) == 0)
                 credores.remove(maiorCredor);
         }
 

@@ -51,6 +51,12 @@ public class App {
         grupoController.registarRotas(app);
         despesaController.registrarRotas(app);
 
+        app.exception(Exception.class, (e, ctx) -> {
+            System.err.println("Erro na rota " + ctx.path() + ": " + e.getMessage());
+            e.printStackTrace();
+            ctx.status(500).json(java.util.Map.of("error", e.getClass().getSimpleName(), "message", e.getMessage() != null ? e.getMessage() : "Erro interno"));
+        });
+
         app.start(port);
     }
 }
